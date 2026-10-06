@@ -63,7 +63,7 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
     }
   };
 
-  const useDemo = (email: string) => {
+  const applyDemo = (email: string) => {
     setTab("signin");
     setError(null);
     const form = document.getElementById("auth-form") as HTMLFormElement | null;
@@ -265,7 +265,7 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
                     <div className="text-[11px] text-muted-foreground">{account.note}</div>
                   </div>
                   <Chip tone="neutral">{account.role}</Chip>
-                  <Button size="sm" variant="outline" onClick={() => useDemo(account.email)}>
+                  <Button size="sm" variant="outline" onClick={() => applyDemo(account.email)}>
                     Use
                   </Button>
                 </li>

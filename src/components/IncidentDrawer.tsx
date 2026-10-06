@@ -13,9 +13,7 @@ import { DecisionTimeline } from "@/components/DecisionTimeline";
 import {
   ACTION_PROFILE,
   eventTelemetry,
-  mitreFor,
   savingsNote,
-  type TriageResult,
 } from "@/core";
 import { useAuth } from "@/hooks/use-auth";
 import type { ReviewDraft } from "@/lib/store";
@@ -132,15 +130,14 @@ export function IncidentDrawer() {
     <Sheet open={selectedId !== null} onOpenChange={(open) => !open && close()}>
       <SheetContent
         side="right"
-        className="gap-0 overflow-y-auto border-l bg-background p-0 sm:max-w-2xl md:max-w-3xl"
+        className="gap-0 overflow-y-auto border-l bg-background p-0 sm:max-w-2xl md:max-w-3xl [&>button]:z-50"
       >
         {!result ? (
           <div className="flex h-full items-center justify-center p-8 text-sm text-muted-foreground">
             Select an event to inspect it.
           </div>
         ) : (
-          <>
-            <SheetHeader className="sticky top-0 z-10 gap-0 border-b bg-background/95 p-5 backdrop-blur">
+          <>              <SheetHeader className="sticky top-0 z-10 gap-0 border-b bg-background/95 p-5 pr-14 backdrop-blur">
               <div className="flex flex-wrap items-center gap-2">
                 <Chip tone={toneForRoute(result.route)} pulse>
                   {routeLabel(result.route)}
@@ -164,7 +161,7 @@ export function IncidentDrawer() {
             </SheetHeader>
 
             <Tabs defaultValue="decision" className="flex flex-col gap-0">
-              <TabsList className="sticky top-[124px] z-10 mx-5 w-fit max-w-full justify-start gap-1 overflow-x-auto rounded-none border-b bg-background p-0">
+              <TabsList className="mx-5 w-fit max-w-full justify-start gap-1 overflow-x-auto rounded-none border-b bg-background p-0">
                 {TABS.map((tab) => (
                   <TabsTrigger
                     key={tab.value}

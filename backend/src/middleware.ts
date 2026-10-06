@@ -92,8 +92,10 @@ export function errorHandler(
   error: unknown,
   _req: Request,
   res: Response,
-  _next: NextFunction,
+  next: NextFunction,
 ): void {
+  // Express only recognises an error handler by its four-parameter arity.
+  void next;
   if (error instanceof HttpError) {
     res.status(error.status).json({ error: error.message });
     return;

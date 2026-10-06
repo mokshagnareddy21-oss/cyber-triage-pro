@@ -1,5 +1,5 @@
 import { classificationConfidence } from "./decision";
-import { MITRE_MAP, routeForProbability } from "./thresholds";
+import { MITRE_MAP } from "./thresholds";
 import { hash01 } from "./rng";
 import type {
   ActionKind,
@@ -186,11 +186,10 @@ export function deriveJev(event: SecurityEvent): JevDecision {
   const h1 = hash01(seed);
   const h2 = hash01(`sev:${seed}`);
   const h3 = hash01(`lat:${seed}`);
+  const severityScore = Math.round(rule.severity[0] + h2 * (rule.severity[1] - rule.severity[0]));
   const probability = round2(
     rule.probability[0] + h1 * (rule.probability[1] - rule.probability[0]),
   );
-  const severityScore = Math.round(rule.severity[0] + h2 * (rule.severity[1] - rule.severity[0]));
-  const route = routeForProbability(probability);
   return {
     maliciousProbability: probability,
     classification: rule.classification,

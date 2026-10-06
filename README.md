@@ -241,7 +241,8 @@ DISMISS_THRESHOLD=0.40
 
 ```env
 # Full URL of the deployed Express API. Unset → the console runs the local engine.
-VITE_API_URL=http://localhost:4000/api
+# A trailing /api is tolerated and stripped automatically.
+VITE_API_URL=http://localhost:4000
 ```
 
 **Never** put `JEV_API_KEY`, `GEMINI_API_KEY`, `MONGODB_URI` or `JWT_SECRET` in a `VITE_`-prefixed
@@ -302,7 +303,7 @@ bun run dev            # http://localhost:4000
 
 # 6. point the frontend at it
 #    create .env.local in the project root with:
-#    VITE_API_URL=http://localhost:4000/api
+#    VITE_API_URL=http://localhost:4000
 ```
 
 ### Development commands
@@ -325,7 +326,7 @@ bun run dev            # http://localhost:4000
 **Frontend → Vercel or Netlify**
 
 - Build command `bun run build`, output directory `dist`.
-- Set `VITE_API_URL` to the deployed API base URL (for example `https://cybersentinel-api.onrender.com/api`).
+- Set `VITE_API_URL` to the deployed API origin (for example `https://cybersentinel-api.onrender.com`).
 - No model keys are needed — and none must be added.
 
 **Backend → Render or Railway**
@@ -411,10 +412,14 @@ Add captures to `docs/screenshots/`:
 
 ## 15. Verification performed
 
-- `bun tsc -b --noEmit` — passes.
-- `bun run build` — production build succeeds.
+- `bun tsc -b --noEmit` — passes (this is the gate the platform runs).
+- `bun run build` — production build succeeds; routes are code-split.
 - `cd backend && bun run typecheck` — API + shared core pass.
-- `cd backend && bun install` — installs cleanly.
+- `cd backend && bun install` — installs cleanly (129 packages).
+- `bun run lint` — all CyberSentinel source files are clean. Three pre-existing errors remain in
+  untouched shadcn/ui template files (`ui/carousel.tsx`, `ui/sidebar.tsx`, `hooks/use-mobile.ts`)
+  that the app does not render; they were failing before this project and are left alone rather
+  than patched with suppressions.
 
 Not verified in this environment (no Atlas instance, no model keys, and the preview sandbox does
 not permit running a long-lived Node process): a live Mongo connection, a live Jev call, and a

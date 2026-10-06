@@ -5,7 +5,6 @@ import {
   SCORE_QUESTION,
   deriveJev,
 } from "../../../shared/fixtures";
-import { hash01 } from "../../../shared/rng";
 import { z } from "zod";
 import type { JevDecision, SecurityEvent, ThreatType } from "../../../shared/types";
 

@@ -3,7 +3,6 @@ import { Chip, ConfidenceBar, routeLabel, toneForReview, toneForRoute } from "@/
 import { IncidentDrawer } from "@/components/IncidentDrawer";
 import { MetricCard } from "@/components/MetricCard";
 import { SCENARIOS, type RouteKind, type TriageResult } from "@/core";
-import { useAuth } from "@/hooks/use-auth";
 import { useTriage } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -140,8 +139,8 @@ export default function Console() {
     select,
     degraded,
     transport,
+    aiMode,
   } = useTriage();
-  const { mode } = useAuth();
   const [view, setView] = useState<ConsoleView>("queue");
   const [routeFilter, setRouteFilter] = useState<"ALL" | RouteKind>("ALL");
   const [query, setQuery] = useState("");
@@ -161,11 +160,6 @@ export default function Console() {
       );
     });
   }, [results, routeFilter, query]);
-
-  const aiMode: "LIVE" | "DEMO_FIXTURE" =
-    mode === "backend" && !degraded && results.some((row) => row.jev.source === "LIVE")
-      ? "LIVE"
-      : "DEMO_FIXTURE";
 
   const handleScenario = async (key: string) => {
     setScenario("");

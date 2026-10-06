@@ -11,7 +11,17 @@
 
 const RAW_BASE = import.meta.env.VITE_API_URL as string | undefined;
 
-export const API_BASE = RAW_BASE ? RAW_BASE.replace(/\/+$/, "") : null;
+/**
+ * Normalised API origin.
+ *
+ * The client always prefixes paths with `/api` itself, so a trailing `/api`
+ * (or trailing slashes) on the configured value is stripped. That way both
+ * `https://api.example.com` and `https://api.example.com/api` are correct, and
+ * a plausible misconfiguration cannot silently produce `/api/api/...`.
+ */
+export const API_BASE = RAW_BASE
+  ? RAW_BASE.trim().replace(/\/+$/, "").replace(/\/api$/, "")
+  : null;
 
 export type ApiMode = "backend" | "local";
 

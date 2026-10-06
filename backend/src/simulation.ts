@@ -30,7 +30,7 @@ const status: SimulationStatus = {
   speedMs: 3000,
 };
 
-function nextEvent(fleet: SimServer[], actor: string) {
+function nextEvent(fleet: SimServer[]) {
   return generateEvent({ fleet, timestamp: Date.now(), seed: Date.now() });
 }
 
@@ -44,7 +44,7 @@ export async function startSimulation(fleet: SimServer[], speedMs = 3000): Promi
     void (async () => {
       try {
         const result = await analyzeSecurityEvent({
-          generatedEvent: nextEvent(fleet, "simulation"),
+          generatedEvent: nextEvent(fleet),
           actor: "simulation",
         });
         status.eventsGenerated += 1;

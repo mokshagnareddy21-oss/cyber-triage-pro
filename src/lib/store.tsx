@@ -53,6 +53,8 @@ interface TriageContextValue {
   speedMs: number;
   transport: Transport;
   degraded: boolean;
+  /** Which engine the backend reports it is running — never inferred from UI. */
+  aiMode: "LIVE" | "DEMO_FIXTURE";
   selectedId: string | null;
   transient: Record<string, string>;
   startStream: () => void;
@@ -90,36 +92,50 @@ export function TriageProvider({ children }: { children: ReactNode }) {
   const [fleet, setFleet] = useState<SimServer[]>(initialFleet);
   const [results, setResults] = useState<TriageResult[]>(initial.results);
   const [audit, setAudit] = useState<AuditEntry[]>(initial.audit);
-  const [streaming, setStreaming] = useState(false);
+  const [streaming, setStreaming] = useState(true);
   const [speedMs, setSpeedMs] = useState(DEFAULT_SPEED_MS);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [transient, setTransient] = useState<Record<string, string>>({});
-  const [transport, setTransport] = useState<Transport>(mode === "backend" ? "backend" : "local");
+  const [transportOverride, setTransportOverride] = useState<Transport | null>(null);
+  const transport: Transport = transportOverride ?? (mode === "backend" ? "backend" : "local");
   const [degraded, setDegraded] = useState(false);
+  const [aiMode, setAiMode] = useState<"LIVE" | "DEMO_FIXTURE">("DEMO_FIXTURE");
 
   const timerRef = useRef<number | null>(null);
   const resultsRef = useRef(results);
-  resultsRef.current = results;
   const fleetRef = useRef(fleet);
-  fleetRef.current = fleet;
   const transportRef = useRef<Transport>(transport);
-  transportRef.current = transport;
+
+  // Refs are mirrored from state in effects — never during render.
+  useEffect(() => {
+    resultsRef.current = results;
+  }, [results]);
+  useEffect(() => {
+    fleetRef.current = fleet;
+  }, [fleet]);
+  useEffect(() => {
+    transportRef.current = transport;
+  }, [transport]);
 
   useEffect(() => {
-    if (mode === "local") {
-      setTransport("local");
-      return;
-    }
     if (mode !== "backend") return;
     let cancelled = false;
     void (async () => {
       try {
-        const servers = await apiFetch<SimServer[]>("/api/servers");
-        if (!cancelled && Array.isArray(servers) && servers.length > 0) setFleet(servers);
+        const [servers, health] = await Promise.all([
+          apiFetch<SimServer[]>("/api/servers"),
+          apiFetch<{ ai?: { jev?: string } }>("/api/health"),
+        ]);
+        if (cancelled) return;
+        if (Array.isArray(servers) && servers.length > 0) setFleet(servers);
+        if (health?.ai?.jev) {
+          setAiMode(health.ai.jev === "LIVE" ? "LIVE" : "DEMO_FIXTURE");
+        }
       } catch {
         if (!cancelled) {
-          setTransport("local");
+          setTransportOverride("local");
           setDegraded(true);
+          setAiMode("DEMO_FIXTURE");
           toast.warning("Backend unreachable", {
             description: "Running the local deterministic engine so the console keeps working.",
           });
@@ -185,7 +201,7 @@ export function TriageProvider({ children }: { children: ReactNode }) {
           });
         } catch (error) {
           transportRef.current = "local";
-          setTransport("local");
+          setTransportOverride("local");
           setDegraded(true);
           toast.error("Falling back to the local engine", {
             description:
@@ -204,13 +220,16 @@ export function TriageProvider({ children }: { children: ReactNode }) {
       setResults((previous) => [result, ...previous].slice(0, MAX_QUEUE));
       setAudit((previous) => [...entries, ...previous].slice(0, MAX_QUEUE * 4));
 
-      if (result.route === "CONTAIN") {
-        toast.error(`Contained · ${result.decision.action}`, {
-          description: `${result.event.serverId} · ${result.jev.classification} · p=${result.jev.maliciousProbability.toFixed(2)} (simulated)`,
-        });
-      } else if (result.escalationFailed) {
+      // Containment is already visible as a red row and an ISOLATED chip; only
+      // genuinely actionable surprises interrupt the analyst.
+      if (result.escalationFailed) {
         toast.warning("Deep analysis unavailable", {
-          description: "HUMAN REVIEW REQUIRED — the event stays with an analyst.",
+          description: `${result.event.id} · HUMAN REVIEW REQUIRED — the event stays on the queue.`,
+        });
+      }
+      if (scenarioKey) {
+        toast.info(`Scenario · ${scenario?.name ?? scenarioKey}`, {
+          description: `${routeName(result.route)} → ${result.decision.action} · p=${result.jev.maliciousProbability.toFixed(2)}`,
         });
       }
       return result;
@@ -219,7 +238,9 @@ export function TriageProvider({ children }: { children: ReactNode }) {
   );
 
   const ingestRef = useRef(ingest);
-  ingestRef.current = ingest;
+  useEffect(() => {
+    ingestRef.current = ingest;
+  }, [ingest]);
 
   useEffect(() => {
     if (!streaming) {
@@ -307,7 +328,7 @@ export function TriageProvider({ children }: { children: ReactNode }) {
     setSelectedId(null);
     setTransient({});
     setDegraded(false);
-    setTransport(mode === "backend" ? "backend" : "local");
+    setTransportOverride(null);
     toast.success("Simulation reset", { description: "Fleet restored, queue re-seeded." });
   }, [mode]);
 
@@ -325,6 +346,7 @@ export function TriageProvider({ children }: { children: ReactNode }) {
       speedMs,
       transport,
       degraded,
+      aiMode,
       selectedId,
       transient,
       startStream: () => setStreaming(true),
@@ -335,10 +357,16 @@ export function TriageProvider({ children }: { children: ReactNode }) {
       select: setSelectedId,
       review,
     }),
-    [fleet, results, metrics, efficiency, audit, streaming, speedMs, transport, degraded, selectedId, transient, ingest, reset, review],
+    [fleet, results, metrics, efficiency, audit, streaming, speedMs, transport, degraded, aiMode, selectedId, transient, ingest, reset, review],
   );
 
   return <TriageContext.Provider value={value}>{children}</TriageContext.Provider>;
+}
+
+function routeName(route: TriageResult["route"]): string {
+  if (route === "CONTAIN") return "CONTAIN";
+  if (route === "DISMISS") return "DISMISS";
+  return "ESCALATE";
 }
 
 function analyseLocally(fleet: SimServer[], scenarioKey?: string): TriageResult {
