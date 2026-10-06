@@ -1,0 +1,240 @@
+/* DO NOT CHANGE */
+@import "tailwindcss";
+@import "tw-animate-css";
+@custom-variant dark (&:is(.dark *));
+
+/* DO NOT CHANGE */
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+/* CHANGE VALUES FOR THEME — Minimalism: paper, ink, hairlines. */
+:root {
+  --radius: 0.5rem;
+
+  --background: oklch(0.988 0.002 92);
+  --foreground: oklch(0.19 0.006 88);
+
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.19 0.006 88);
+
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.19 0.006 88);
+
+  --primary: oklch(0.22 0.006 88);
+  --primary-foreground: oklch(0.985 0.002 92);
+
+  --secondary: oklch(0.958 0.003 92);
+  --secondary-foreground: oklch(0.24 0.006 88);
+
+  --muted: oklch(0.958 0.003 92);
+  --muted-foreground: oklch(0.5 0.01 88);
+
+  --accent: oklch(0.945 0.004 92);
+  --accent-foreground: oklch(0.24 0.006 88);
+
+  --destructive: oklch(0.545 0.19 27.3);
+  --border: oklch(0.908 0.005 92);
+  --input: oklch(0.908 0.005 92);
+  --ring: oklch(0.55 0.01 88);
+
+  /* Near-monochrome charts with one restrained tint per series. */
+  --chart-1: oklch(0.35 0.01 88);
+  --chart-2: oklch(0.62 0.11 184);
+  --chart-3: oklch(0.72 0.14 78);
+  --chart-4: oklch(0.55 0.19 27);
+  --chart-5: oklch(0.66 0.16 60);
+
+  --sidebar: oklch(0.988 0.002 92);
+  --sidebar-foreground: oklch(0.19 0.006 88);
+  --sidebar-primary: oklch(0.22 0.006 88);
+  --sidebar-primary-foreground: oklch(0.985 0.002 92);
+  --sidebar-accent: oklch(0.945 0.004 92);
+  --sidebar-accent-foreground: oklch(0.24 0.006 88);
+  --sidebar-border: oklch(0.908 0.005 92);
+  --sidebar-ring: oklch(0.55 0.01 88);
+
+  /* Signal palette — the only colour in the product, used exclusively for state. */
+  --signal-critical: #b42318;
+  --signal-critical-bg: #fef3f2;
+  --signal-critical-line: #fda29b;
+  --signal-warning: #a15c07;
+  --signal-warning-bg: #fffaeb;
+  --signal-warning-line: #fec84b;
+  --signal-safe: #067647;
+  --signal-safe-bg: #ecfdf3;
+  --signal-safe-line: #6ce9a6;
+  --signal-info: #175cd3;
+  --signal-info-bg: #eff8ff;
+  --signal-info-line: #84caff;
+  --signal-ai: #6941c6;
+  --signal-ai-bg: #f4f3ff;
+  --signal-ai-line: #d6bbfb;
+}
+
+.dark {
+  --background: oklch(0.16 0.004 88);
+  --foreground: oklch(0.96 0.002 92);
+
+  --card: oklch(0.2 0.005 88);
+  --card-foreground: oklch(0.96 0.002 92);
+
+  --popover: oklch(0.2 0.005 88);
+  --popover-foreground: oklch(0.96 0.002 92);
+
+  --primary: oklch(0.94 0.002 92);
+  --primary-foreground: oklch(0.2 0.005 88);
+
+  --secondary: oklch(0.27 0.005 88);
+  --secondary-foreground: oklch(0.96 0.002 92);
+
+  --muted: oklch(0.27 0.005 88);
+  --muted-foreground: oklch(0.68 0.006 88);
+
+  --accent: oklch(0.27 0.005 88);
+  --accent-foreground: oklch(0.96 0.002 92);
+
+  --destructive: oklch(0.68 0.17 27.3);
+  --border: oklch(1 0 0 / 12%);
+  --input: oklch(1 0 0 / 16%);
+  --ring: oklch(0.7 0.006 88);
+
+  --chart-1: oklch(0.9 0.002 92);
+  --chart-2: oklch(0.72 0.11 184);
+  --chart-3: oklch(0.78 0.14 78);
+  --chart-4: oklch(0.66 0.19 27);
+  --chart-5: oklch(0.74 0.16 60);
+
+  --sidebar: oklch(0.16 0.004 88);
+  --sidebar-foreground: oklch(0.96 0.002 92);
+  --sidebar-primary: oklch(0.94 0.002 92);
+  --sidebar-primary-foreground: oklch(0.2 0.005 88);
+  --sidebar-accent: oklch(0.27 0.005 88);
+  --sidebar-accent-foreground: oklch(0.96 0.002 92);
+  --sidebar-border: oklch(1 0 0 / 12%);
+  --sidebar-ring: oklch(0.7 0.006 88);
+
+  --signal-critical: #ff6b5e;
+  --signal-critical-bg: oklch(0.3 0.06 27);
+  --signal-critical-line: oklch(0.6 0.16 27);
+  --signal-warning: #fdb022;
+  --signal-warning-bg: oklch(0.3 0.05 78);
+  --signal-warning-line: oklch(0.72 0.14 78);
+  --signal-safe: #6ce9a6;
+  --signal-safe-bg: oklch(0.3 0.06 160);
+  --signal-safe-line: oklch(0.72 0.14 160);
+  --signal-info: #84adff;
+  --signal-info-bg: oklch(0.3 0.06 264);
+  --signal-info-line: oklch(0.7 0.14 264);
+  --signal-ai: #d6bbfb;
+  --signal-ai-bg: oklch(0.3 0.06 300);
+  --signal-ai-line: oklch(0.74 0.14 300);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family:
+      ui-sans-serif,
+      system-ui,
+      -apple-system,
+      "Segoe UI",
+      Roboto,
+      "Helvetica Neue",
+      Arial,
+      sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  button:not([disabled]),
+  [role="button"]:not([disabled]) {
+    cursor: pointer;
+  }
+}
+
+@layer utilities {
+  /* Hairline rules — the divider language of the whole product. */
+  .rule-t {
+    border-top: 1px solid var(--border);
+  }
+  .rule-b {
+    border-bottom: 1px solid var(--border);
+  }
+  .rule-l {
+    border-left: 1px solid var(--border);
+  }
+  .rule-r {
+    border-right: 1px solid var(--border);
+  }
+
+  /* Very quiet graph paper for empty states and the landing hero. */
+  .paper-grid {
+    background-image:
+      linear-gradient(to right, color-mix(in oklab, var(--border) 70%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in oklab, var(--border) 70%, transparent) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, black 40%, transparent 100%);
+  }
+
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Single, slow pulse used only for live states. */
+  .pulse-dot {
+    animation: cs-pulse 2.4s ease-in-out infinite;
+  }
+}
+
+@keyframes cs-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse-dot {
+    animation: none;
+  }
+}

@@ -1,0 +1,8 @@
+.env.local
+.env
+backend/.env
+node_modules
+dist
+src/convex/_generated
+.tsbuildinfo
+backend/*.log
